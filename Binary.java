@@ -1,11 +1,11 @@
 //Richard Wang
 //APCS1 pd9
-//HW43 -- This or That
-//2015-12-07
+//HW45 -- .
+//2015-12-09
 
 //skeleton file for class Binary
 
-public class Binary {
+public class Binary implements Comparable{
 
     private int _decNum;
     private String _binNum;
@@ -72,12 +72,15 @@ public class Binary {
 	/****** YOUR IMPLEMENTATION HURRR ******/   
 	String retStr = "";
 	while (n>0) {
-	    retStr += n % 2;
+	    retStr = (n % 2) + retStr;
 	    n /= 2;
 	}
 	return retStr;
     }
 
+    public int get_DecNum() {
+	return _decNum;
+    }
 
     /*=====================================
       String decToBinR(int) -- converts base-10 input to binary, recursively
@@ -95,7 +98,7 @@ public class Binary {
 	    return "";
 	} 
 	else {
-	    return (n % 2) + decToBinR(n/2);
+	    return decToBinR(n/2) +(n % 2) ;
 	}
     }
 
@@ -115,7 +118,7 @@ public class Binary {
 	/****** YOUR IMPLEMENTATION HURRR ******/   
 	int ret = 0;
 	for (int c = 0  ; c < s.length() ; c++) {
-	    ret += Integer.parseInt(s.substring(c,c+1))*((int)(Math.pow(10,c)));
+	    ret += Integer.parseInt(s.substring(c,c+1))*((int)(Math.pow(2,s.length() - 1 - c)));
 	}
 	return ret;
     }
@@ -165,14 +168,30 @@ public class Binary {
       post: Returns 0 if this Object is equal to the input Object,
       negative integer if this<input, positive integer otherwise
       =============================================*/
-    public int compareTo( Object other ) {
+    public int compareTo( Object o ) {
 	/****** YOUR IMPLEMENTATION HURRR ******/   
-	if (_decNum == ((Binary) other)._decNum) {
-	    return 0;
-	} else if (_decNum < ((Binary) other)._decNum) {
-	    return -1;
-	} else {
-	    return 1;
+	Rational rat = new Rational(_decNum,1); // This method uses Rational's compareTo
+	if (o == null) { //null is a primitive
+	    throw new NullPointerException("\n compareTo() input is null");
+	}
+	if (!(o instanceof Comparable)) {
+	    throw new ClassCastException("\n compareTo() input does not implement Comparable");
+	}
+	else {
+	    if (o instanceof Rational) { //Case 1: Rational
+		return rat.compareTo((Rational)o);
+	    }
+	    if (o instanceof Binary) { //Case 2: Binary
+		Rational other = new Rational(((Binary)o).get_DecNum(), 1);
+		return rat.compareTo(other);
+	    }
+	    if (o instanceof Hexadecimal) { //Case 3: Hexadecimal
+		Rational other = new Rational(((Hexadecimal)o).get_DecNum(), 1);
+		return rat.compareTo(other);
+	    }
+	    else { //Safety
+		throw new ClassCastException("\n compareTo() input does not implement Comparable");
+	    }
 	}
     }
 
@@ -180,36 +199,10 @@ public class Binary {
     //main method for testing
     public static void main( String[] args ) {
 
+	Binary gur = new Binary(10);
+	Binary hur = new Binary(2);
+	System.out.println(hur.compareTo(gur));
 
-	System.out.println();
-	System.out.println( "Testing ..." );
-
-	Binary b1 = new Binary(5);
-	Binary b2 = new Binary(5);
-	Binary b3 = b1;
-	Binary b4 = new Binary(7);
-
-	System.out.println( b1 );
-	System.out.println( b2 );
-	System.out.println( b3 );       
-	System.out.println( b4 );       
-
-	System.out.println( "\n==..." );
-	System.out.println( b1 == b2 ); //should be false
-	System.out.println( b1 == b3 ); //should be true
-
-	System.out.println( "\n.equals()..." );
-	System.out.println( b1.equals(b2) ); //should be true
-	System.out.println( b1.equals(b3) ); //should be true
-	System.out.println( b3.equals(b1) ); //should be true
-	System.out.println( b4.equals(b2) ); //should be false
-	System.out.println( b1.equals(b4) ); //should be false
-
-	System.out.println( "\n.compareTo..." );
-	System.out.println( b1.compareTo(b2) ); //should be 0
-	System.out.println( b1.compareTo(b3) ); //should be 0
-	System.out.println( b1.compareTo(b4) ); //should be neg
-	System.out.println( b4.compareTo(b1) ); //should be pos
 
     }//end main()
 

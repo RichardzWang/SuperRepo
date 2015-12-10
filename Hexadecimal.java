@@ -1,11 +1,11 @@
-//Team ANG - Richard Wang, Jessica Yang
-//APCS1 pd9
-//HW44 -- This or That or Fourteen Other Things
-//2015-12-08
+// Richard Wang
+// APCS1 pd9
+// HW45 -- .
+// 2015-12-09
 
 //skeleton file for class Hexadecimal
 
-public class Hexadecimal {
+public class Hexadecimal implements Comparable{
 
     private int _decNum;
     private String _hexNum;
@@ -46,6 +46,9 @@ public class Hexadecimal {
 	_hexNum = s;
     }
 
+    public int get_DecNum() {
+	return _decNum;
+    }
 
     /*=====================================
       String toString() -- returns String representation of this Object
@@ -165,18 +168,33 @@ public class Hexadecimal {
       post: Returns 0 if this Object is equal to the input Object,
       negative integer if this<input, positive integer otherwise
       =============================================*/
-    public int compareTo( Object other ) {
+    public int compareTo( Object o ) {
 	/****** YOUR IMPLEMENTATION HURRR ******/
-	if (!(other instanceof Hexadecimal))
-	    throw new ClassCastException("\ncompareTo() input not a Hexadecimal");
-	if (_decNum == ((Hexadecimal) other)._decNum) {
-	    return 0;
-	} else if (_decNum < ((Hexadecimal) other)._decNum) {
-	    return -1;
-	} else {
-	    return 1;
+	Rational rat = new Rational(_decNum,1);//compareTo() for Rational
+	if (o == null) {
+	    throw new NullPointerException("\n compareTo() input is null");
+	}
+	if (!(o instanceof Comparable)) {
+	    throw new ClassCastException("\n compareTo() input does not implement Comparable");
+	}
+	else {
+	    if (o instanceof Rational) {//Case Rational
+		return rat.compareTo((Rational)o);
+	    }
+	    if (o instanceof Binary) { //Case Binary
+		Rational other = new Rational(((Binary)o).get_DecNum(), 1);
+		return rat.compareTo(other);
+	    }
+	    if (o instanceof Hexadecimal) { //Case Hexadecimal
+		Rational other = new Rational(((Hexadecimal)o).get_DecNum(), 1);
+		return rat.compareTo(other);
+	    }
+	    else { //Safety
+		throw new ClassCastException("\n compareTo() input does not implement Comparable");
+	    }
 	}
     }
+
 
 
     //main method for testing

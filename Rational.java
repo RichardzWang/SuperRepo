@@ -3,7 +3,7 @@
 // HW45 -- .
 // 2015-12-09
 
-public class Rational implements Comparable {
+public class Rational implements Comparable{
     public int numerator;
     public int denominator;
     
@@ -45,15 +45,6 @@ public class Rational implements Comparable {
 	    System.out.println("Cannot divide by 0.");
     	}
     }
-    
-    public static void main(String[] args) {
-        Rational r = new Rational(1, 1);
-        Rational s = new Rational(7, 20);
-	Rational t = new Rational(14, 40);
-	s.compareTo(r);
-        System.out.println(s.compareTo(r));
-	System.out.println(s.equals(t));
-     }
 
   /*=====================PHASE 2=====================*/
 
@@ -110,15 +101,45 @@ public class Rational implements Comparable {
 	 }
      }
 
-     public int compareTo (Object other){
-	 if (this.floatValue() > other.floatValue()) {
-	     return 1;
-	 } else if (this.floatValue() < other.floatValue()) {
-	     return -1;
-	 } else {
-	     return 0;
-	 }
+    public int compareTo (Rational o){
+	int diff = this.numerator*o.denominator - o.numerator*this.denominator;
+	if (diff > 0){
+            return 1;
+        }
+	else if (diff == 0){
+            return 0;
+        }
+        else{
+	    return -1;
+	}
     }
+    
+    public int compareTo (Object o){
+	if (o == null) {
+	    throw new NullPointerException("\n compareTo() input is null");
+	}
+	if (!(o instanceof Comparable)) {
+	    throw new ClassCastException("\n compareTo() input does not implement Comparable");
+	}
+	else {
+	    if (o instanceof Rational) {
+		return this.compareTo((Rational)o);
+	    }
+	    if (o instanceof Binary) {
+		Rational other = new Rational(((Binary)o).get_DecNum(), 1);
+		return this.compareTo(other);
+	    }
+	    if (o instanceof Hexadecimal) {
+		Rational other = new Rational(((Hexadecimal)o).get_DecNum(), 1);
+		return this.compareTo(other);
+	    }
+	    else {
+		throw new ClassCastException("\n compareTo() input does not implement Comparable");
+	    }
+	}
+    }
+
+
 
     /*=====================PHASE 4=====================*/
     public boolean equals(Object other){
@@ -127,5 +148,17 @@ public class Rational implements Comparable {
 	    retboo = (other instanceof Rational && ((this).compareTo((Rational)other))==0);
 	}
 	return retboo;
+    }
+
+    public static void main(String[] args) {
+        Rational r = new Rational(1, 1);
+        Rational s = new Rational(7, 20);
+	Rational t = new Rational(14, 40);
+	System.out.println ("Fraction 1:\t" + r);
+	System.out.println ("Fraction 2:\t"+ s);
+	System.out.println ("Fraction 3:\t" +t);
+        System.out.println("Comparing Fraction 2 to Fraction 1:\t" + s.compareTo(r)); //should return -13
+	System.out.println("Checking to see if Fraction 2 is equal to Fraction 1\t" + s.equals(r)); // should return false
+	System.out.println("Checking to see if Fraction 2 is equal to Fraction 3\t" + s.equals(t)); //should return true
     }
 }
